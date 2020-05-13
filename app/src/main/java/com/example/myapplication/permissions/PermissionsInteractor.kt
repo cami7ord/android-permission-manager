@@ -9,32 +9,41 @@ interface PermissionsInteractor {
 
     fun requestCameraPermissions(
         context: Context,
-        onPermissionGranted: Runnable? = null,
-        onPermissionDenied: Runnable? = null,
-        onShowRational: Runnable? = null,
-        onDeniedPermanently: Runnable? = null
+        permissionsResponseListener: PermissionsResponseListener
     )
 
     fun requestLocationPermissions(
         context: Context,
         background: Boolean,
-        onPermissionGranted: Runnable? = null,
-        onPermissionDenied: Runnable? = null,
-        onShowRational: Runnable? = null,
-        onDeniedPermanently: Runnable? = null
+        permissionsResponseListener: PermissionsResponseListener
     )
 }
 
+class PermissionsResponseListener(
+    val onPermissionsGranted: Runnable? = null,
+    val onPermissionsDenied: Runnable? = null,
+    val onShowRational: Runnable? = null,
+    val onDeniedPermanently: Runnable? = null
+)
+
 class PermissionsInteractorImpl : PermissionsInteractor {
+
+    companion object {
+        const val CAMERA_REQ_ID = 1
+        const val LOCATION_REQ_ID = 2
+
+        val CAMERA_PERMISSION_ARRAY = arrayOf(CAMERA)
+        val LOCATION_PERMISSION_ARRAY = arrayOf(
+            ACCESS_FINE_LOCATION,
+            ACCESS_COARSE_LOCATION
+        )
+    }
 
     private fun requestPermissions(
         context: Context,
         requestId: Int,
         vararg permissions: String,
-        onPermissionGranted: Runnable? = null,
-        onPermissionDenied: Runnable? = null,
-        onShowRational: Runnable? = null,
-        onDeniedPermanently: Runnable? = null
+        permissionsResponseListener: PermissionsResponseListener
     ) {
 
         PermissionManager._requestPermissions(
@@ -44,16 +53,16 @@ class PermissionsInteractorImpl : PermissionsInteractor {
             callback = {
                 when (this) {
                     is PermissionGranted -> {
-                        onPermissionGranted?.run()
+                        permissionsResponseListener.onPermissionsGranted?.run()
                     }
                     is PermissionDenied -> {
-                        onPermissionDenied?.run()
+                        permissionsResponseListener.onPermissionsDenied?.run()
                     }
                     is ShowRational -> {
-                        onShowRational?.run()
+                        permissionsResponseListener.onShowRational?.run()
                     }
                     is PermissionDeniedPermanently -> {
-                        onDeniedPermanently?.run()
+                        permissionsResponseListener.onDeniedPermanently?.run()
                     }
                 }
             })
@@ -62,56 +71,33 @@ class PermissionsInteractorImpl : PermissionsInteractor {
 
     override fun requestCameraPermissions(
         context: Context,
-        onPermissionGranted: Runnable?,
-        onPermissionDenied: Runnable?,
-        onShowRational: Runnable?,
-        onDeniedPermanently: Runnable?
+        permissionsResponseListener: PermissionsResponseListener
     ) {
-        val permissionsArray = arrayOf(
-            CAMERA
-        )
-
         requestPermissions(
             context,
-            requestId = 1,
-            permissions = *permissionsArray,
-            onPermissionGranted = onPermissionGranted,
-            onPermissionDenied = onPermissionDenied,
-            onShowRational = onShowRational,
-            onDeniedPermanently = onDeniedPermanently
+            requestId = CAMERA_REQ_ID,
+            permissions = *CAMERA_PERMISSION_ARRAY,
+            permissionsResponseListener = permissionsResponseListener
         )
     }
 
     override fun requestLocationPermissions(
         context: Context,
         background: Boolean,
-        onPermissionGranted: Runnable?,
-        onPermissionDenied: Runnable?,
-        onShowRational: Runnable?,
-        onDeniedPermanently: Runnable?
+        permissionsResponseListener: PermissionsResponseListener
     ) {
 
         val permissionsArray = if (background) {
-            arrayOf(
-                ACCESS_FINE_LOCATION,
-                ACCESS_COARSE_LOCATION,
-                ACCESS_BACKGROUND_LOCATION
-            )
+            arrayOf(*LOCATION_PERMISSION_ARRAY, ACCESS_BACKGROUND_LOCATION)
         } else {
-            arrayOf(
-                ACCESS_FINE_LOCATION,
-                ACCESS_COARSE_LOCATION
-            )
+            LOCATION_PERMISSION_ARRAY
         }
 
         requestPermissions(
             context,
-            requestId = 2,
+            requestId = LOCATION_REQ_ID,
             permissions = *permissionsArray,
-            onPermissionGranted = onPermissionGranted,
-            onPermissionDenied = onPermissionDenied,
-            onShowRational = onShowRational,
-            onDeniedPermanently = onDeniedPermanently
+            permissionsResponseListener = permissionsResponseListener
         )
     }
 }
