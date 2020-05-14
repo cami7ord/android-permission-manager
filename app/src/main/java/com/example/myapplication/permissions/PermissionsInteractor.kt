@@ -7,7 +7,7 @@ import com.eazypermissions.dsl.PermissionManager
 
 interface PermissionsInteractor {
 
-    var context: Context
+    //var context: Context
 
     fun requestCameraPermissions(
         //context: Context,
@@ -22,9 +22,9 @@ interface PermissionsInteractor {
 
 }
 
-class PermissionsInteractorImpl : PermissionsInteractor {
+class PermissionsInteractorImpl(private val context: Context) : PermissionsInteractor {
 
-    override lateinit var context: Context
+    //override lateinit var context: Context
 
     companion object {
         const val CAMERA_REQ_ID = 1

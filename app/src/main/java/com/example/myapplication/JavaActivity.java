@@ -13,17 +13,16 @@ import kotlin.Lazy;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
+import static org.koin.core.parameter.DefinitionParametersKt.parametersOf;
 import static org.koin.java.KoinJavaComponent.inject;
 
 public class JavaActivity extends AppCompatActivity {
 
-    private Lazy<PermissionsInteractor> permissionsInteractor = inject(PermissionsInteractor.class);
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        permissionsInteractor.getValue().setContext(this);
-    }
+    private Lazy<PermissionsInteractor> permissionsInteractor =
+            inject(PermissionsInteractor.class,
+                    null,
+                    () -> parametersOf(this)
+            );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

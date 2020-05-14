@@ -9,14 +9,12 @@ import com.eazypermissions.common.model.PermissionResult.*
 import com.example.myapplication.permissions.PermissionsInteractor
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 class MainActivity : AppCompatActivity() {
 
-    private val permissionsInteractor: PermissionsInteractor by inject()
-
-    override fun onStart() {
-        super.onStart()
-        permissionsInteractor.context = this
+    private val permissionsInteractor: PermissionsInteractor by inject {
+        parametersOf(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
