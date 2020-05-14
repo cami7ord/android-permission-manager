@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.eazypermissions.common.model.PermissionResult
 import com.eazypermissions.common.model.PermissionResult.*
 import com.example.myapplication.permissions.PermissionsInteractor
 import kotlinx.android.synthetic.main.activity_main.*
@@ -19,58 +20,50 @@ class MainActivity : AppCompatActivity() {
 
         view_btn_camera.setOnClickListener {
             permissionsInteractor.requestCameraPermissions(
-                context = this,
-                callback = {
-                    when (this) {
-                        is PermissionGranted -> {
-                        }
-                        is PermissionDenied -> {
-                        }
-                        is ShowRational -> {
-                        }
-                        is PermissionDeniedPermanently -> {
-                        }
+                context = this
+            ) {
+                when (this) {
+                    is PermissionGranted -> {
+                        handleResult(this)
+                    }
+                    is PermissionDenied -> {
+                        handleResult(this)
+                    }
+                    is ShowRational -> {
+                        handleResult(this)
+                    }
+                    is PermissionDeniedPermanently -> {
+                        handleResult(this)
                     }
                 }
-            )
+            }
         }
 
         view_btn_location.setOnClickListener {
             permissionsInteractor.requestLocationPermissions(
                 context = this,
-                background = false,
-                callback = {
-                    when (this) {
-                        is PermissionGranted -> {
-                        }
-                        is PermissionDenied -> {
-                        }
-                        is ShowRational -> {
-                        }
-                        is PermissionDeniedPermanently -> {
-                        }
-                    }
-                }
-            )
+                background = false
+            ) {
+                handleResult(this)
+            }
         }
 
         view_btn_location_background.setOnClickListener {
             permissionsInteractor.requestLocationPermissions(
                 context = this,
-                background = true,
-                callback = {
-                    when (this) {
-                        is PermissionGranted -> {
-                        }
-                        is PermissionDenied -> {
-                        }
-                        is ShowRational -> {
-                        }
-                        is PermissionDeniedPermanently -> {
-                        }
+                background = true
+            ) {
+                when (this) {
+                    is PermissionGranted -> {
+                    }
+                    is PermissionDenied -> {
+                    }
+                    is ShowRational -> {
+                    }
+                    is PermissionDeniedPermanently -> {
                     }
                 }
-            )
+            }
         }
 
         view_btn_java.setOnClickListener {
@@ -79,8 +72,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val openAppSettingsRunnable = Runnable {
-        Toast.makeText(this, "Granted!", Toast.LENGTH_LONG).show()
+    private fun handleResult(permissionResult: PermissionResult) {
+        Toast.makeText(
+            this,
+            "Granted " + permissionResult.requestCode,
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
 }

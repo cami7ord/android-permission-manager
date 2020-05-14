@@ -30,13 +30,13 @@ public class JavaActivity extends AppCompatActivity {
 
         viewBtnCamera.setOnClickListener(v -> permissionsInteractor.getValue().requestCameraPermissions(
                 JavaActivity.this,
-                function
+                this::handleResult
         ));
 
         viewBtnLocation.setOnClickListener(v -> permissionsInteractor.getValue().requestLocationPermissions(
                 JavaActivity.this,
                 false,
-                function
+                permissionResult -> handleResult(permissionResult)
         ));
 
         viewBtnBackground.setOnClickListener(v -> permissionsInteractor.getValue().requestLocationPermissions(
