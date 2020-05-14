@@ -5,5 +5,8 @@ import com.example.myapplication.permissions.PermissionsInteractorImpl
 import org.koin.dsl.module
 
 val appModule = module {
-    single<PermissionsInteractor> { PermissionsInteractorImpl() }
+
+    //single<PermissionsInteractor> { PermissionsInteractorImpl() }
+
+    factory<PermissionsInteractor> { PermissionsInteractorImpl() }
 }

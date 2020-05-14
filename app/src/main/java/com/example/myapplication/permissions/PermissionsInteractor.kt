@@ -7,13 +7,15 @@ import com.eazypermissions.dsl.PermissionManager
 
 interface PermissionsInteractor {
 
+    var context: Context
+
     fun requestCameraPermissions(
-        context: Context,
+        //context: Context,
         callback: PermissionResult.() -> Unit
     )
 
     fun requestLocationPermissions(
-        context: Context,
+        //context: Context,
         background: Boolean,
         callback: PermissionResult.() -> Unit
     )
@@ -21,6 +23,8 @@ interface PermissionsInteractor {
 }
 
 class PermissionsInteractorImpl : PermissionsInteractor {
+
+    override lateinit var context: Context
 
     companion object {
         const val CAMERA_REQ_ID = 1
@@ -34,7 +38,7 @@ class PermissionsInteractorImpl : PermissionsInteractor {
     }
 
     private fun requestPermissions(
-        context: Context,
+        //context: Context,
         requestId: Int,
         vararg permissions: String,
         callback: PermissionResult.() -> Unit
@@ -49,11 +53,11 @@ class PermissionsInteractorImpl : PermissionsInteractor {
     }
 
     override fun requestCameraPermissions(
-        context: Context,
+        //context: Context,
         callback: PermissionResult.() -> Unit
     ) {
         requestPermissions(
-            context,
+            //context,
             requestId = CAMERA_REQ_ID,
             permissions = *CAMERA_PERMISSION_ARRAY,
             callback = callback
@@ -61,7 +65,7 @@ class PermissionsInteractorImpl : PermissionsInteractor {
     }
 
     override fun requestLocationPermissions(
-        context: Context,
+        //context: Context,
         background: Boolean,
         callback: PermissionResult.() -> Unit
     ) {
@@ -73,7 +77,7 @@ class PermissionsInteractorImpl : PermissionsInteractor {
         }
 
         requestPermissions(
-            context,
+            //context,
             requestId = LOCATION_REQ_ID,
             permissions = *permissionsArray,
             callback = callback

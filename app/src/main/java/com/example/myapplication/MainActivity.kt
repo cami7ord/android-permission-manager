@@ -14,14 +14,17 @@ class MainActivity : AppCompatActivity() {
 
     private val permissionsInteractor: PermissionsInteractor by inject()
 
+    override fun onStart() {
+        super.onStart()
+        permissionsInteractor.context = this
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         view_btn_camera.setOnClickListener {
-            permissionsInteractor.requestCameraPermissions(
-                context = this
-            ) {
+            permissionsInteractor.requestCameraPermissions {
                 when (this) {
                     is PermissionGranted -> {
                         handleResult(this)
@@ -41,7 +44,6 @@ class MainActivity : AppCompatActivity() {
 
         view_btn_location.setOnClickListener {
             permissionsInteractor.requestLocationPermissions(
-                context = this,
                 background = false
             ) {
                 handleResult(this)
@@ -50,7 +52,6 @@ class MainActivity : AppCompatActivity() {
 
         view_btn_location_background.setOnClickListener {
             permissionsInteractor.requestLocationPermissions(
-                context = this,
                 background = true
             ) {
                 when (this) {

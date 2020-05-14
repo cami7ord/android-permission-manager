@@ -20,6 +20,12 @@ public class JavaActivity extends AppCompatActivity {
     private Lazy<PermissionsInteractor> permissionsInteractor = inject(PermissionsInteractor.class);
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        permissionsInteractor.getValue().setContext(this);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_java);
@@ -29,18 +35,15 @@ public class JavaActivity extends AppCompatActivity {
         Button viewBtnBackground = findViewById(R.id.view_btn_location_background);
 
         viewBtnCamera.setOnClickListener(v -> permissionsInteractor.getValue().requestCameraPermissions(
-                JavaActivity.this,
                 this::handleResult
         ));
 
         viewBtnLocation.setOnClickListener(v -> permissionsInteractor.getValue().requestLocationPermissions(
-                JavaActivity.this,
                 false,
                 permissionResult -> handleResult(permissionResult)
         ));
 
         viewBtnBackground.setOnClickListener(v -> permissionsInteractor.getValue().requestLocationPermissions(
-                JavaActivity.this,
                 true,
                 function));
     }
