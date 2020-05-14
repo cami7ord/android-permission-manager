@@ -4,8 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.eazypermissions.common.model.PermissionResult.*
 import com.example.myapplication.permissions.PermissionsInteractor
-import com.example.myapplication.permissions.PermissionsResponseListener
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 
@@ -20,9 +20,18 @@ class MainActivity : AppCompatActivity() {
         view_btn_camera.setOnClickListener {
             permissionsInteractor.requestCameraPermissions(
                 context = this,
-                permissionsResponseListener = PermissionsResponseListener(
-                    onPermissionsGranted = openAppSettingsRunnable
-                )
+                callback = {
+                    when (this) {
+                        is PermissionGranted -> {
+                        }
+                        is PermissionDenied -> {
+                        }
+                        is ShowRational -> {
+                        }
+                        is PermissionDeniedPermanently -> {
+                        }
+                    }
+                }
             )
         }
 
@@ -30,9 +39,18 @@ class MainActivity : AppCompatActivity() {
             permissionsInteractor.requestLocationPermissions(
                 context = this,
                 background = false,
-                permissionsResponseListener = PermissionsResponseListener(
-                    onPermissionsGranted = openAppSettingsRunnable
-                )
+                callback = {
+                    when (this) {
+                        is PermissionGranted -> {
+                        }
+                        is PermissionDenied -> {
+                        }
+                        is ShowRational -> {
+                        }
+                        is PermissionDeniedPermanently -> {
+                        }
+                    }
+                }
             )
         }
 
@@ -40,9 +58,18 @@ class MainActivity : AppCompatActivity() {
             permissionsInteractor.requestLocationPermissions(
                 context = this,
                 background = true,
-                permissionsResponseListener = PermissionsResponseListener(
-                    onPermissionsGranted = openAppSettingsRunnable
-                )
+                callback = {
+                    when (this) {
+                        is PermissionGranted -> {
+                        }
+                        is PermissionDenied -> {
+                        }
+                        is ShowRational -> {
+                        }
+                        is PermissionDeniedPermanently -> {
+                        }
+                    }
+                }
             )
         }
 

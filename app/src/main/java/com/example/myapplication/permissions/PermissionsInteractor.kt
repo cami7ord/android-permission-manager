@@ -2,29 +2,23 @@ package com.example.myapplication.permissions
 
 import android.Manifest.permission.*
 import android.content.Context
-import com.eazypermissions.common.model.PermissionResult.*
+import com.eazypermissions.common.model.PermissionResult
 import com.eazypermissions.dsl.PermissionManager
 
 interface PermissionsInteractor {
 
     fun requestCameraPermissions(
         context: Context,
-        permissionsResponseListener: PermissionsResponseListener
+        callback: PermissionResult.() -> Unit
     )
 
     fun requestLocationPermissions(
         context: Context,
         background: Boolean,
-        permissionsResponseListener: PermissionsResponseListener
+        callback: PermissionResult.() -> Unit
     )
-}
 
-class PermissionsResponseListener(
-    val onPermissionsGranted: Runnable? = null,
-    val onPermissionsDenied: Runnable? = null,
-    val onShowRational: Runnable? = null,
-    val onDeniedPermanently: Runnable? = null
-)
+}
 
 class PermissionsInteractorImpl : PermissionsInteractor {
 
@@ -43,48 +37,33 @@ class PermissionsInteractorImpl : PermissionsInteractor {
         context: Context,
         requestId: Int,
         vararg permissions: String,
-        permissionsResponseListener: PermissionsResponseListener
+        callback: PermissionResult.() -> Unit
     ) {
 
         PermissionManager._requestPermissions(
             context,
             permissions = *permissions,
             requestId = requestId,
-            callback = {
-                when (this) {
-                    is PermissionGranted -> {
-                        permissionsResponseListener.onPermissionsGranted?.run()
-                    }
-                    is PermissionDenied -> {
-                        permissionsResponseListener.onPermissionsDenied?.run()
-                    }
-                    is ShowRational -> {
-                        permissionsResponseListener.onShowRational?.run()
-                    }
-                    is PermissionDeniedPermanently -> {
-                        permissionsResponseListener.onDeniedPermanently?.run()
-                    }
-                }
-            })
-
+            callback = callback
+        )
     }
 
     override fun requestCameraPermissions(
         context: Context,
-        permissionsResponseListener: PermissionsResponseListener
+        callback: PermissionResult.() -> Unit
     ) {
         requestPermissions(
             context,
             requestId = CAMERA_REQ_ID,
             permissions = *CAMERA_PERMISSION_ARRAY,
-            permissionsResponseListener = permissionsResponseListener
+            callback = callback
         )
     }
 
     override fun requestLocationPermissions(
         context: Context,
         background: Boolean,
-        permissionsResponseListener: PermissionsResponseListener
+        callback: PermissionResult.() -> Unit
     ) {
 
         val permissionsArray = if (background) {
@@ -97,7 +76,8 @@ class PermissionsInteractorImpl : PermissionsInteractor {
             context,
             requestId = LOCATION_REQ_ID,
             permissions = *permissionsArray,
-            permissionsResponseListener = permissionsResponseListener
+            callback = callback
         )
     }
+
 }

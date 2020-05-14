@@ -1,16 +1,17 @@
 package com.example.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.eazypermissions.common.model.PermissionResult;
 import com.example.myapplication.permissions.PermissionsInteractor;
-import com.example.myapplication.permissions.PermissionsResponseListener;
 
 import kotlin.Lazy;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 import static org.koin.java.KoinJavaComponent.inject;
 
@@ -29,34 +30,33 @@ public class JavaActivity extends AppCompatActivity {
 
         viewBtnCamera.setOnClickListener(v -> permissionsInteractor.getValue().requestCameraPermissions(
                 JavaActivity.this,
-                new PermissionsResponseListener(
-                        openAppSettingsRunnable,
-                        null,
-                        null,
-                        null)
+                function
         ));
 
         viewBtnLocation.setOnClickListener(v -> permissionsInteractor.getValue().requestLocationPermissions(
                 JavaActivity.this,
                 false,
-                new PermissionsResponseListener(
-                        openAppSettingsRunnable,
-                        null,
-                        null,
-                        null)
+                function
         ));
 
         viewBtnBackground.setOnClickListener(v -> permissionsInteractor.getValue().requestLocationPermissions(
                 JavaActivity.this,
                 true,
-                new PermissionsResponseListener(
-                        openAppSettingsRunnable,
-                        null,
-                        null,
-                        null)
-        ));
+                function));
     }
 
-    final Runnable openAppSettingsRunnable = () ->
-            Toast.makeText(JavaActivity.this, "Granted", Toast.LENGTH_SHORT).show();
+    final Function1<PermissionResult, Unit> function = new Function1<PermissionResult, Unit>() {
+        @Override
+        public Unit invoke(PermissionResult permissionResult) {
+            return handleResult(permissionResult);
+        }
+    };
+
+    private Unit handleResult(PermissionResult permissionResult) {
+        Toast.makeText(JavaActivity.this,
+                "Granted " + permissionResult.getRequestCode(),
+                Toast.LENGTH_SHORT).show();
+        return null;
+    }
+
 }
