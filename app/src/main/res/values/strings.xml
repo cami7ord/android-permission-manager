@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Kotlin Activity</string>
     <string name="camera">Camera</string>
     <string name="location">Basic location</string>
     <string name="background_location">Background location</string>
+    <string name="java">Java Activity</string>
 </resources>
