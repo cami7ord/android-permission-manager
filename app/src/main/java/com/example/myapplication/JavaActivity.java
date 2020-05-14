@@ -27,55 +27,36 @@ public class JavaActivity extends AppCompatActivity {
         Button viewBtnLocation = findViewById(R.id.view_btn_location);
         Button viewBtnBackground = findViewById(R.id.view_btn_location_background);
 
-        viewBtnCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                permissionsInteractor.getValue().requestCameraPermissions(
-                        JavaActivity.this,
-                        new PermissionsResponseListener(
-                                openAppSettingsRunnable,
-                                null,
-                                null,
-                                null)
-                );
-            }
-        });
+        viewBtnCamera.setOnClickListener(v -> permissionsInteractor.getValue().requestCameraPermissions(
+                JavaActivity.this,
+                new PermissionsResponseListener(
+                        openAppSettingsRunnable,
+                        null,
+                        null,
+                        null)
+        ));
 
-        viewBtnLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                permissionsInteractor.getValue().requestLocationPermissions(
-                        JavaActivity.this,
-                        false,
-                        new PermissionsResponseListener(
-                                openAppSettingsRunnable,
-                                null,
-                                null,
-                                null)
-                );
-            }
-        });
+        viewBtnLocation.setOnClickListener(v -> permissionsInteractor.getValue().requestLocationPermissions(
+                JavaActivity.this,
+                false,
+                new PermissionsResponseListener(
+                        openAppSettingsRunnable,
+                        null,
+                        null,
+                        null)
+        ));
 
-        viewBtnBackground.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                permissionsInteractor.getValue().requestLocationPermissions(
-                        JavaActivity.this,
-                        true,
-                        new PermissionsResponseListener(
-                                openAppSettingsRunnable,
-                                null,
-                                null,
-                                null)
-                );
-            }
-        });
+        viewBtnBackground.setOnClickListener(v -> permissionsInteractor.getValue().requestLocationPermissions(
+                JavaActivity.this,
+                true,
+                new PermissionsResponseListener(
+                        openAppSettingsRunnable,
+                        null,
+                        null,
+                        null)
+        ));
     }
 
-    final Runnable openAppSettingsRunnable = new Runnable() {
-        @Override
-        public void run() {
+    final Runnable openAppSettingsRunnable = () ->
             Toast.makeText(JavaActivity.this, "Granted", Toast.LENGTH_SHORT).show();
-        }
-    };
 }
