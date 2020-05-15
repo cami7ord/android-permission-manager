@@ -5,8 +5,12 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.eazypermissions.common.model.PermissionResult;
+import com.example.myapplication.permissions.KDialogFragment;
 import com.example.myapplication.permissions.PermissionsInteractor;
 
 import kotlin.Lazy;
@@ -32,6 +36,7 @@ public class JavaActivity extends AppCompatActivity {
         Button viewBtnCamera = findViewById(R.id.view_btn_camera);
         Button viewBtnLocation = findViewById(R.id.view_btn_location);
         Button viewBtnBackground = findViewById(R.id.view_btn_location_background);
+        Button viewBtnFragment = findViewById(R.id.view_btn_fragment);
 
         viewBtnCamera.setOnClickListener(v -> permissionsInteractor.getValue().requestCameraPermissions(
                 this::handleResult
@@ -45,6 +50,17 @@ public class JavaActivity extends AppCompatActivity {
         viewBtnBackground.setOnClickListener(v -> permissionsInteractor.getValue().requestLocationPermissions(
                 true,
                 function));
+
+        viewBtnFragment.setOnClickListener(v -> {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            ft.addToBackStack(null);
+            DialogFragment dialogFragment = new KDialogFragment();
+            dialogFragment.show(ft, "dialog");
+        });
     }
 
     final Function1<PermissionResult, Unit> function = new Function1<PermissionResult, Unit>() {
