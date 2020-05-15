@@ -5,4 +5,5 @@
     <string name="background_location">Background location</string>
     <string name="java">Java Activity</string>
     <string name="fragment">Fragment</string>
+    <string name="settings">Settings</string>
 </resources>

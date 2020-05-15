@@ -50,17 +50,13 @@ class KDialogFragment : DialogFragment() {
         }
 
         view_btn_location.setOnClickListener {
-            permissionsInteractor.requestLocationPermissions(
-                background = false
-            ) {
+            permissionsInteractor.requestLocationPermissions {
                 handleResult(this)
             }
         }
 
         view_btn_location_background.setOnClickListener {
-            permissionsInteractor.requestLocationPermissions(
-                background = true
-            ) {
+            permissionsInteractor.requestLocationPermissions {
                 when (this) {
                     is PermissionResult.PermissionGranted -> {
                     }

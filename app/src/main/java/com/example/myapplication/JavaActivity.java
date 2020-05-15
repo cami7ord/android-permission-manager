@@ -42,12 +42,10 @@ public class JavaActivity extends AppCompatActivity {
         ));
 
         viewBtnLocation.setOnClickListener(v -> permissionsInteractor.getValue().requestLocationPermissions(
-                false,
                 permissionResult -> handleResult(permissionResult)
         ));
 
         viewBtnBackground.setOnClickListener(v -> permissionsInteractor.getValue().requestLocationPermissions(
-                true,
                 function));
 
         viewBtnFragment.setOnClickListener(v -> {

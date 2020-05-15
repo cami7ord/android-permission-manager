@@ -1,7 +1,9 @@
 package com.example.myapplication
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.eazypermissions.common.model.PermissionResult
@@ -41,25 +43,25 @@ class MainActivity : AppCompatActivity() {
         }
 
         view_btn_location.setOnClickListener {
-            permissionsInteractor.requestLocationPermissions(
-                background = false
-            ) {
+            permissionsInteractor.requestLocationPermissions {
                 handleResult(this)
             }
         }
 
         view_btn_location_background.setOnClickListener {
-            permissionsInteractor.requestLocationPermissions(
-                background = true
-            ) {
+            permissionsInteractor.requestBackgroundLocationPermissions {
                 when (this) {
                     is PermissionGranted -> {
+                        handleResult(this)
                     }
                     is PermissionDenied -> {
+                        handleResult(this)
                     }
                     is ShowRational -> {
+                        handleResult(this)
                     }
                     is PermissionDeniedPermanently -> {
+                        handleResult(this)
                     }
                 }
             }
@@ -69,12 +71,19 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, JavaActivity::class.java)
             startActivity(intent)
         }
+
+        view_btn_settings.setOnClickListener {
+            startActivity(Intent().apply {
+                action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                data = Uri.fromParts("package", packageName, null)
+            })
+        }
     }
 
     private fun handleResult(permissionResult: PermissionResult) {
         Toast.makeText(
             this,
-            "Granted " + permissionResult.requestCode,
+            permissionResult.toString() + permissionResult.requestCode,
             Toast.LENGTH_SHORT
         ).show()
     }
