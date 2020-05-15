@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.eazypermissions.common.model.PermissionResult;
-import com.example.myapplication.permissions.KDialogFragment;
 import com.example.myapplication.permissions.PermissionsInteractor;
 
 import kotlin.Lazy;

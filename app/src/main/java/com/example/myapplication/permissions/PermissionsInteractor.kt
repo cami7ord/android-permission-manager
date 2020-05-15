@@ -22,7 +22,7 @@ interface PermissionsInteractor {
 
 }
 
-class PermissionsInteractorImpl(private val context: Context) : PermissionsInteractor {
+class PermissionsInteractorImpl(private val activityOrFragment: Any) : PermissionsInteractor {
 
     //override lateinit var context: Context
 
@@ -45,7 +45,7 @@ class PermissionsInteractorImpl(private val context: Context) : PermissionsInter
     ) {
 
         PermissionManager._requestPermissions(
-            context,
+            activityOrFragment,
             permissions = *permissions,
             requestId = requestId,
             callback = callback
