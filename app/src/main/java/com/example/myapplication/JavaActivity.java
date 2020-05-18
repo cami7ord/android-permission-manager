@@ -9,7 +9,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.eazypermissions.common.model.PermissionResult;
+import com.example.myapplication.permissions.PermissionRequestResult;
 import com.example.myapplication.permissions.PermissionsInteractor;
 
 import kotlin.Lazy;
@@ -60,16 +60,16 @@ public class JavaActivity extends AppCompatActivity {
         });
     }
 
-    final Function1<PermissionResult, Unit> function = new Function1<PermissionResult, Unit>() {
+    final Function1<PermissionRequestResult, Unit> function = new Function1<PermissionRequestResult, Unit>() {
         @Override
-        public Unit invoke(PermissionResult permissionResult) {
+        public Unit invoke(PermissionRequestResult permissionResult) {
             return handleResult(permissionResult);
         }
     };
 
-    private Unit handleResult(PermissionResult permissionResult) {
+    private Unit handleResult(PermissionRequestResult permissionResult) {
         Toast.makeText(JavaActivity.this,
-                "Granted " + permissionResult.getRequestCode(),
+                permissionResult.getResult().toString(),
                 Toast.LENGTH_SHORT).show();
         return null;
     }

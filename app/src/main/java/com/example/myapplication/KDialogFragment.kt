@@ -6,7 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import com.eazypermissions.common.model.PermissionResult
+import com.example.myapplication.permissions.PermissionRequestResult
+import com.example.myapplication.permissions.PermissionRequestResult.*
 import com.example.myapplication.permissions.PermissionsInteractor
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.koin.android.ext.android.inject
@@ -33,16 +34,16 @@ class KDialogFragment : DialogFragment() {
         view_btn_camera.setOnClickListener {
             permissionsInteractor.requestCameraPermissions {
                 when (this) {
-                    is PermissionResult.PermissionGranted -> {
+                    is Granted -> {
                         handleResult(this)
                     }
-                    is PermissionResult.PermissionDenied -> {
+                    is Denied -> {
                         handleResult(this)
                     }
-                    is PermissionResult.ShowRational -> {
+                    is Rational -> {
                         handleResult(this)
                     }
-                    is PermissionResult.PermissionDeniedPermanently -> {
+                    is PermanentlyDenied -> {
                         handleResult(this)
                     }
                 }
@@ -58,23 +59,23 @@ class KDialogFragment : DialogFragment() {
         view_btn_location_background.setOnClickListener {
             permissionsInteractor.requestLocationPermissions {
                 when (this) {
-                    is PermissionResult.PermissionGranted -> {
+                    is Granted -> {
                     }
-                    is PermissionResult.PermissionDenied -> {
+                    is Denied -> {
                     }
-                    is PermissionResult.ShowRational -> {
+                    is Rational -> {
                     }
-                    is PermissionResult.PermissionDeniedPermanently -> {
+                    is PermanentlyDenied -> {
                     }
                 }
             }
         }
     }
 
-    private fun handleResult(permissionResult: PermissionResult) {
+    private fun handleResult(permissionResult: PermissionRequestResult) {
         Toast.makeText(
             context,
-            "Granted " + permissionResult.requestCode,
+            permissionResult.result.toString(),
             Toast.LENGTH_SHORT
         ).show()
     }

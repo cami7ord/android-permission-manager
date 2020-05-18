@@ -6,8 +6,8 @@ import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.eazypermissions.common.model.PermissionResult
-import com.eazypermissions.common.model.PermissionResult.*
+import com.example.myapplication.permissions.PermissionRequestResult
+import com.example.myapplication.permissions.PermissionRequestResult.*
 import com.example.myapplication.permissions.PermissionsInteractor
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
@@ -26,16 +26,16 @@ class MainActivity : AppCompatActivity() {
         view_btn_camera.setOnClickListener {
             permissionsInteractor.requestCameraPermissions {
                 when (this) {
-                    is PermissionGranted -> {
+                    is Granted -> {
                         handleResult(this)
                     }
-                    is PermissionDenied -> {
+                    is Denied -> {
                         handleResult(this)
                     }
-                    is ShowRational -> {
+                    is Rational -> {
                         handleResult(this)
                     }
-                    is PermissionDeniedPermanently -> {
+                    is PermanentlyDenied -> {
                         handleResult(this)
                     }
                 }
@@ -51,16 +51,16 @@ class MainActivity : AppCompatActivity() {
         view_btn_location_background.setOnClickListener {
             permissionsInteractor.requestBackgroundLocationPermissions {
                 when (this) {
-                    is PermissionGranted -> {
+                    is Granted -> {
                         handleResult(this)
                     }
-                    is PermissionDenied -> {
+                    is Denied -> {
                         handleResult(this)
                     }
-                    is ShowRational -> {
+                    is Rational -> {
                         handleResult(this)
                     }
-                    is PermissionDeniedPermanently -> {
+                    is PermanentlyDenied -> {
                         handleResult(this)
                     }
                 }
@@ -80,10 +80,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleResult(permissionResult: PermissionResult) {
+    private fun handleResult(permissionResult: PermissionRequestResult) {
         Toast.makeText(
             this,
-            permissionResult.toString() + permissionResult.requestCode,
+            permissionResult.result.toString(),
             Toast.LENGTH_SHORT
         ).show()
     }

@@ -1,14 +1,28 @@
 package com.example.myapplication.di
 
-import com.example.myapplication.permissions.PermissionsInteractor
-import com.example.myapplication.permissions.PermissionsInteractorImpl
+import android.os.Build.VERSION
+import android.os.Build.VERSION_CODES
+import com.example.myapplication.permissions.*
 import org.koin.dsl.module
+
+/*sealed class ActivityOrFragment {
+    class MyFragment(val reference: Fragment): ActivityOrFragment()
+    class MyActivity(val reference: AppCompatActivity): ActivityOrFragment()
+}*/
 
 val appModule = module {
 
-    //single<PermissionsInteractor> { PermissionsInteractorImpl() }
-
-    //factory<PermissionsInteractor> { PermissionsInteractorImpl() }
-
-    factory<PermissionsInteractor> { (any: Any) -> PermissionsInteractorImpl(any) }
+    factory<PermissionsInteractor> { (any: Any) ->
+        when {
+            VERSION.SDK_INT >= VERSION_CODES.Q -> {
+                PermissionsInteractorImpl29(any)
+            }
+            VERSION.SDK_INT >= VERSION_CODES.M -> {
+                PermissionsInteractorImpl23(any)
+            }
+            else -> {
+                PermissionsInteractorImpl21(any)
+            }
+        }
+    }
 }
