@@ -76,7 +76,7 @@ class KDialogFragment : DialogFragment() {
     private fun handleResult(permissionResult: PermissionRequestResult) {
         Toast.makeText(
             context,
-            permissionResult.result.toString(),
+            permissionResult.toString(),
             Toast.LENGTH_SHORT
         ).show()
     }

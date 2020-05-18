@@ -70,7 +70,7 @@ public class JavaActivity extends AppCompatActivity {
 
     private Unit handleResult(PermissionRequestResult permissionResult) {
         Toast.makeText(JavaActivity.this,
-                permissionResult.getResult().toString(),
+                permissionResult.toString(),
                 Toast.LENGTH_SHORT).show();
         return null;
     }

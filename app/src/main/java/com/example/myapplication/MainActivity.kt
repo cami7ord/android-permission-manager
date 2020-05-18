@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
     private fun handleResult(permissionResult: PermissionRequestResult) {
         Toast.makeText(
             this,
-            permissionResult.result.toString(),
+            permissionResult.toString(),
             Toast.LENGTH_SHORT
         ).show()
     }
