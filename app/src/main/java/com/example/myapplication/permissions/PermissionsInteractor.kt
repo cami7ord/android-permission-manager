@@ -22,7 +22,7 @@ interface PermissionsInteractor {
 
 }
 
-abstract class BasePermissionInteractor(private val activityOrFragment: Any) :
+abstract class BasePermissionInteractor(private val activityOrFragmentReference: ActivityOrFragmentReference) :
     PermissionsInteractor {
 
     companion object {
@@ -79,7 +79,7 @@ abstract class BasePermissionInteractor(private val activityOrFragment: Any) :
     ) {
 
         PermissionManager._requestPermissions(
-            activityOrFragment,
+            activityOrFragmentReference.reference,
             permissions = *permissions,
             requestId = requestId,
             callback = callback
@@ -88,8 +88,8 @@ abstract class BasePermissionInteractor(private val activityOrFragment: Any) :
 
 }
 
-class PermissionsInteractorImpl21(activityOrFragment: Any) : BasePermissionInteractor(
-    activityOrFragment
+class PermissionsInteractorImpl21(activityOrFragmentReference: ActivityOrFragmentReference) : BasePermissionInteractor(
+    activityOrFragmentReference
 ) {
     override fun requestLocationPermissions(callback: PermissionRequestResult.() -> Unit) {
         callback(
@@ -108,8 +108,8 @@ class PermissionsInteractorImpl21(activityOrFragment: Any) : BasePermissionInter
     }
 }
 
-class PermissionsInteractorImpl23(activityOrFragment: Any) : BasePermissionInteractor(
-    activityOrFragment
+class PermissionsInteractorImpl23(activityOrFragmentReference: ActivityOrFragmentReference) : BasePermissionInteractor(
+    activityOrFragmentReference
 ) {
     override fun requestBackgroundLocationPermissions(callback: PermissionRequestResult.() -> Unit) {
         requestLocationPermissions(callback)
@@ -117,8 +117,8 @@ class PermissionsInteractorImpl23(activityOrFragment: Any) : BasePermissionInter
 }
 
 
-class PermissionsInteractorImpl29(activityOrFragment: Any) : BasePermissionInteractor(
-    activityOrFragment
+class PermissionsInteractorImpl29(activityOrFragmentReference: ActivityOrFragmentReference) : BasePermissionInteractor(
+    activityOrFragmentReference
 ) {
     override fun requestBackgroundLocationPermissions(
         callback: PermissionRequestResult.() -> Unit

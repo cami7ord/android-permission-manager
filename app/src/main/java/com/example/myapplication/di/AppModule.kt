@@ -12,16 +12,16 @@ import org.koin.dsl.module
 
 val appModule = module {
 
-    factory<PermissionsInteractor> { (any: Any) ->
+    factory<PermissionsInteractor> { (caller: ActivityOrFragmentReference) ->
         when {
             VERSION.SDK_INT >= VERSION_CODES.Q -> {
-                PermissionsInteractorImpl29(any)
+                PermissionsInteractorImpl29(caller)
             }
             VERSION.SDK_INT >= VERSION_CODES.M -> {
-                PermissionsInteractorImpl23(any)
+                PermissionsInteractorImpl23(caller)
             }
             else -> {
-                PermissionsInteractorImpl21(any)
+                PermissionsInteractorImpl21(caller)
             }
         }
     }

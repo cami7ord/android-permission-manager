@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.myapplication.permissions.ActivityOrFragmentReference
 import com.example.myapplication.permissions.PermissionRequestResult
 import com.example.myapplication.permissions.PermissionRequestResult.*
 import com.example.myapplication.permissions.PermissionsInteractor
@@ -16,7 +17,7 @@ import org.koin.core.parameter.parametersOf
 class MainActivity : AppCompatActivity() {
 
     private val permissionsInteractor: PermissionsInteractor by inject {
-        parametersOf(this)
+        parametersOf(ActivityOrFragmentReference.ActivityReference(this))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

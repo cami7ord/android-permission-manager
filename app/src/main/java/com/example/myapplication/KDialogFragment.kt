@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import com.example.myapplication.permissions.ActivityOrFragmentReference
 import com.example.myapplication.permissions.PermissionRequestResult
 import com.example.myapplication.permissions.PermissionRequestResult.*
 import com.example.myapplication.permissions.PermissionsInteractor
@@ -17,7 +18,7 @@ import org.koin.core.parameter.parametersOf
 class KDialogFragment : DialogFragment() {
 
     private val permissionsInteractor: PermissionsInteractor by inject {
-        parametersOf(this)
+        parametersOf(ActivityOrFragmentReference.FragmentReference(this))
     }
 
     override fun onCreateView(
