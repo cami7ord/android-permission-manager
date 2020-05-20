@@ -106,19 +106,10 @@ class PermissionsInteractorImpl29(activityOrFragmentReference: ActivityOrFragmen
     override fun requestBackgroundLocationPermissions(
         callback: PermissionRequestResult.() -> Unit
     ) {
-        requestLocationPermissions {
-            when (this) {
-                is Granted -> {
-                    requestPermissions(
-                        requestId = BACK_LOCATION_REQ_ID,
-                        permissions = *BACK_LOCATION_PERMISSION_ARRAY,
-                        callback = callback
-                    )
-                }
-                else -> {
-                    callback(this)
-                }
-            }
-        }
+        requestPermissions(
+            permissions = *LOCATION_PERMISSION_ARRAY.plus(BACK_LOCATION_PERMISSION_ARRAY),
+            requestId = BACK_LOCATION_REQ_ID,
+            callback = callback
+        )
     }
 }
