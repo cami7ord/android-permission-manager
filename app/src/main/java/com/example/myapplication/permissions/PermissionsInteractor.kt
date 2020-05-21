@@ -1,10 +1,18 @@
 package com.example.myapplication.permissions
 
-import android.Manifest.permission.*
-import com.eazypermissions.dsl.PermissionManager
-import com.example.myapplication.permissions.PermissionRequestResult.*
+import com.example.myapplication.permissions.PermissionsInteractor.Companion.CAMERA_REQ_ID
+import com.example.myapplication.permissions.PermissionsInteractor.Companion.LOCATION_REQ_ID
+import com.example.myapplication.permissions.PermissionsInteractor.Companion.BACK_LOCATION_REQ_ID
+import com.example.myapplication.permissions.usecases.CameraPermissionRequestUseCase
+import com.example.myapplication.permissions.usecases.ForegroundLocationPermissionRequestUseCase
 
 interface PermissionsInteractor {
+
+    companion object {
+        const val CAMERA_REQ_ID = 1
+        const val LOCATION_REQ_ID = 2
+        const val BACK_LOCATION_REQ_ID = 3
+    }
 
     fun requestCameraPermissions(
         callback: PermissionRequestResult.() -> Unit
@@ -20,96 +28,53 @@ interface PermissionsInteractor {
 
 }
 
-abstract class BasePermissionInteractor(private val activityOrFragmentReference: ActivityOrFragmentReference) :
-    PermissionsInteractor {
-
-    companion object {
-        const val CAMERA_REQ_ID = 1
-        const val LOCATION_REQ_ID = 2
-        const val BACK_LOCATION_REQ_ID = 3
-
-        val CAMERA_PERMISSION_ARRAY = arrayOf(CAMERA)
-        val LOCATION_PERMISSION_ARRAY = arrayOf(
-            ACCESS_FINE_LOCATION,
-            ACCESS_COARSE_LOCATION
-        )
-        val BACK_LOCATION_PERMISSION_ARRAY = arrayOf(ACCESS_BACKGROUND_LOCATION)
-    }
-
-    override fun requestCameraPermissions(
+abstract class BackgroundPermissionsRequester {
+    abstract fun requestBackgroundPermissions(
         callback: PermissionRequestResult.() -> Unit
-    ) {
-        requestPermissions(
-            requestId = CAMERA_REQ_ID,
-            permissions = *CAMERA_PERMISSION_ARRAY,
-            callback = callback
-        )
-    }
-
-    override fun requestLocationPermissions(
-        callback: PermissionRequestResult.() -> Unit
-    ) {
-        requestPermissions(
-            requestId = LOCATION_REQ_ID,
-            permissions = *LOCATION_PERMISSION_ARRAY,
-            callback = callback
-        )
-    }
-
-    protected fun requestPermissions(
-        requestId: Int,
-        vararg permissions: String,
-        callback: PermissionRequestResult.() -> Unit
-    ) {
-
-        PermissionManager._requestPermissions(
-            activityOrFragmentReference.reference,
-            permissions = *permissions,
-            requestId = requestId,
-            callback = { callback(this.toPermissionRequestResult()) }
-        )
-    }
-
+    )
 }
 
-class PermissionsInteractorImpl21(activityOrFragmentReference: ActivityOrFragmentReference) :
-    BasePermissionInteractor(
-        activityOrFragmentReference
-    ) {
+class PermissionsInteractorUnder23Impl : PermissionsInteractor {
+    override fun requestCameraPermissions(callback: PermissionRequestResult.() -> Unit) {
+        callback(
+            PermissionRequestResult.Granted(requestCode = CAMERA_REQ_ID)
+        )
+    }
+
     override fun requestLocationPermissions(callback: PermissionRequestResult.() -> Unit) {
         callback(
-            Granted(requestCode = LOCATION_REQ_ID)
+            PermissionRequestResult.Granted(requestCode = LOCATION_REQ_ID)
         )
     }
 
     override fun requestBackgroundLocationPermissions(callback: PermissionRequestResult.() -> Unit) {
         callback(
-            Granted(requestCode = BACK_LOCATION_REQ_ID)
+            PermissionRequestResult.Granted(requestCode = BACK_LOCATION_REQ_ID)
         )
     }
+
 }
 
-class PermissionsInteractorImpl23(activityOrFragmentReference: ActivityOrFragmentReference) :
-    BasePermissionInteractor(
-        activityOrFragmentReference
-    ) {
+class PermissionsInteractor23AndAboveImpl(
+    private val cameraUseCase: CameraPermissionRequestUseCase,
+    private val foregroundUseCase: ForegroundLocationPermissionRequestUseCase,
+    private val backgroundRequester: BackgroundPermissionsRequester
+) : PermissionsInteractor {
+    override fun requestCameraPermissions(callback: PermissionRequestResult.() -> Unit) {
+        cameraUseCase.invoke {
+            callback(this.toPermissionRequestResult())
+        }
+    }
+
+    override fun requestLocationPermissions(callback: PermissionRequestResult.() -> Unit) {
+        foregroundUseCase.invoke {
+            callback(this.toPermissionRequestResult())
+        }
+    }
+
     override fun requestBackgroundLocationPermissions(callback: PermissionRequestResult.() -> Unit) {
-        requestLocationPermissions(callback)
-    }
-}
-
-
-class PermissionsInteractorImpl29(activityOrFragmentReference: ActivityOrFragmentReference) :
-    BasePermissionInteractor(
-        activityOrFragmentReference
-    ) {
-    override fun requestBackgroundLocationPermissions(
-        callback: PermissionRequestResult.() -> Unit
-    ) {
-        requestPermissions(
-            permissions = *LOCATION_PERMISSION_ARRAY.plus(BACK_LOCATION_PERMISSION_ARRAY),
-            requestId = BACK_LOCATION_REQ_ID,
-            callback = callback
-        )
+        backgroundRequester.requestBackgroundPermissions {
+            callback(this)
+        }
     }
 }
