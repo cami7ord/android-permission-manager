@@ -46,7 +46,7 @@ public class JavaActivity extends AppCompatActivity {
                 permissionResult -> handleResult(permissionResult)
         ));
 
-        viewBtnBackground.setOnClickListener(v -> permissionsInteractor.getValue().requestLocationPermissions(
+        viewBtnBackground.setOnClickListener(v -> permissionsInteractor.getValue().requestBackgroundLocationPermissions(
                 function));
 
         viewBtnFragment.setOnClickListener(v -> {

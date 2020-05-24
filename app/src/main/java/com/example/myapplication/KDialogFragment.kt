@@ -58,15 +58,19 @@ class KDialogFragment : DialogFragment() {
         }
 
         view_btn_location_background.setOnClickListener {
-            permissionsInteractor.requestLocationPermissions {
+            permissionsInteractor.requestBackgroundLocationPermissions {
                 when (this) {
                     is Granted -> {
+                        handleResult(this)
                     }
                     is Denied -> {
+                        handleResult(this)
                     }
                     is Rational -> {
+                        handleResult(this)
                     }
                     is PermanentlyDenied -> {
+                        handleResult(this)
                     }
                 }
             }
