@@ -1,80 +1,45 @@
 package com.example.myapplication.permissions
 
-import com.example.myapplication.permissions.PermissionsInteractor.Companion.CAMERA_REQ_ID
-import com.example.myapplication.permissions.PermissionsInteractor.Companion.LOCATION_REQ_ID
-import com.example.myapplication.permissions.PermissionsInteractor.Companion.BACK_LOCATION_REQ_ID
+import com.example.myapplication.permissions.usecases.BackgroundLocationPermissionRequestUseCase
 import com.example.myapplication.permissions.usecases.CameraPermissionRequestUseCase
 import com.example.myapplication.permissions.usecases.ForegroundLocationPermissionRequestUseCase
 
 interface PermissionsInteractor {
-
-    companion object {
-        const val CAMERA_REQ_ID = 1
-        const val LOCATION_REQ_ID = 2
-        const val BACK_LOCATION_REQ_ID = 3
-    }
-
-    fun requestCameraPermissions(
-        callback: PermissionRequestResult.() -> Unit
-    )
-
-    fun requestLocationPermissions(
-        callback: PermissionRequestResult.() -> Unit
-    )
-
-    fun requestBackgroundLocationPermissions(
-        callback: PermissionRequestResult.() -> Unit
-    )
-
+    fun requestCameraPermissions(callback: PermissionRequestResult.() -> Unit)
+    fun requestForegroundLocationPermissions(callback: PermissionRequestResult.() -> Unit)
+    fun requestBackgroundLocationPermissions(callback: PermissionRequestResult.() -> Unit)
 }
 
-abstract class BackgroundPermissionsRequester {
-    abstract fun requestBackgroundPermissions(
-        callback: PermissionRequestResult.() -> Unit
-    )
-}
-
-class PermissionsInteractorUnder23Impl : PermissionsInteractor {
+// Since Android versions lower than 23 doesn't support on-demand permissions, we pass granted result
+class AlwaysGrantedPermissionsInteractorImpl : PermissionsInteractor {
     override fun requestCameraPermissions(callback: PermissionRequestResult.() -> Unit) {
-        callback(
-            PermissionRequestResult.Granted(requestCode = CAMERA_REQ_ID)
-        )
+        callback(PermissionRequestResult.Granted(requestCode = 0))
     }
 
-    override fun requestLocationPermissions(callback: PermissionRequestResult.() -> Unit) {
-        callback(
-            PermissionRequestResult.Granted(requestCode = LOCATION_REQ_ID)
-        )
+    override fun requestForegroundLocationPermissions(callback: PermissionRequestResult.() -> Unit) {
+        callback(PermissionRequestResult.Granted(requestCode = 0))
     }
 
     override fun requestBackgroundLocationPermissions(callback: PermissionRequestResult.() -> Unit) {
-        callback(
-            PermissionRequestResult.Granted(requestCode = BACK_LOCATION_REQ_ID)
-        )
+        callback(PermissionRequestResult.Granted(requestCode = 0))
     }
-
 }
 
-class PermissionsInteractor23AndAboveImpl(
+// Android SDK 23 and higher does support on-demand permissions -> delegate request to specific use cases
+class OnDemandPermissionsInteractorImpl(
     private val cameraUseCase: CameraPermissionRequestUseCase,
-    private val foregroundUseCase: ForegroundLocationPermissionRequestUseCase,
-    private val backgroundRequester: BackgroundPermissionsRequester
+    private val foregroundLocationUseCase: ForegroundLocationPermissionRequestUseCase,
+    private val backgroundLocationUseCase: BackgroundLocationPermissionRequestUseCase
 ) : PermissionsInteractor {
     override fun requestCameraPermissions(callback: PermissionRequestResult.() -> Unit) {
-        cameraUseCase.invoke {
-            callback(this.toPermissionRequestResult())
-        }
+        cameraUseCase.requestPermissions(callback)
     }
 
-    override fun requestLocationPermissions(callback: PermissionRequestResult.() -> Unit) {
-        foregroundUseCase.invoke {
-            callback(this.toPermissionRequestResult())
-        }
+    override fun requestForegroundLocationPermissions(callback: PermissionRequestResult.() -> Unit) {
+        foregroundLocationUseCase.requestPermissions(callback)
     }
 
     override fun requestBackgroundLocationPermissions(callback: PermissionRequestResult.() -> Unit) {
-        backgroundRequester.requestBackgroundPermissions {
-            callback(this)
-        }
+        backgroundLocationUseCase.requestPermissions(callback)
     }
 }

@@ -1,21 +1,27 @@
 package com.example.myapplication.permissions.usecases
 
-import android.Manifest.permission
-import com.eazypermissions.common.model.PermissionResult
+import android.Manifest.permission.CAMERA
 import com.eazypermissions.dsl.PermissionManager
 import com.example.myapplication.permissions.ActivityOrFragmentReference
-import com.example.myapplication.permissions.PermissionsInteractor.Companion.CAMERA_REQ_ID
+import com.example.myapplication.permissions.PermissionRequestResult
+import com.example.myapplication.permissions.toPermissionRequestResult
 
-class CameraPermissionRequestUseCase constructor(
+interface CameraPermissionRequestUseCase : PermissionRequestUseCase
+
+class CameraPermissionRequestUseCaseImpl(
     private val caller: ActivityOrFragmentReference
-) {
+) : CameraPermissionRequestUseCase {
 
-    operator fun invoke(callback: PermissionResult.() -> Unit) {
+    override fun requestPermissions(callback: PermissionRequestResult.() -> Unit) {
         PermissionManager._requestPermissions(
             caller.reference,
-            permissions = *arrayOf(permission.CAMERA),
+            permissions = *arrayOf(CAMERA),
             requestId = CAMERA_REQ_ID,
-            callback = { callback(this) }
+            callback = { callback(this.toPermissionRequestResult()) }
         )
+    }
+
+    companion object {
+        private const val CAMERA_REQ_ID = 1
     }
 }

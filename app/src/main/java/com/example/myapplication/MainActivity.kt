@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         view_btn_location.setOnClickListener {
-            permissionsInteractor.requestLocationPermissions {
+            permissionsInteractor.requestForegroundLocationPermissions {
                 handleResult(this)
             }
         }
